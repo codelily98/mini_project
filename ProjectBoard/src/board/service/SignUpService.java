@@ -1,18 +1,26 @@
 package board.service;
 
-public class SignUpService implements Board {
+import board.bean.BoardDTO;
+import board.dao.BoardDAO;
 
+import java.util.Scanner;
+
+public class SignUpService implements Board {
     @Override
-    public void excute() {
-        System.out.println("회원가입 메서드");
-//       [회원가입]
-//        아이디 : person1
-//        비밀번호 : 1234
-//        회원가입이 완료되었습니다.
-//        아이디 : person1
-//        이미 존재하는 아이디 입니다
-//        아이디 : person2
-//        비밀번호 : 1234
-//        회원가입이 완료되었습니다
+    public void execute() {
+        Scanner scanner = new Scanner(System.in);
+        BoardDTO boardDTO = new BoardDTO();
+        BoardDAO boardDAO = BoardDAO.getInstance();
+        
+        System.out.println();
+        System.out.print("아이디: ");
+        boardDTO.setId(scanner.next());
+        System.out.print("비밀번호: ");
+        boardDTO.setPwd(scanner.next());
+        System.out.print("이름: ");
+        boardDTO.setName(scanner.next());
+        
+        boardDAO.signUp(boardDTO);
+        System.out.println("회원가입이 완료되었습니다.");
     }
 }
