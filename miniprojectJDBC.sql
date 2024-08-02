@@ -66,3 +66,4 @@ DROP SEQUENCE BoardComments_seq;
 delete from UsersStatus where userid = '1234';
 ------------------------------------------------------------------
 SELECT BoardPostsID FROM BoardPosts WHERE BoardPostsID = 1
+Delete From BoardComments Where BoardCommentsID = 20;

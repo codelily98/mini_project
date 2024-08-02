@@ -75,7 +75,7 @@ public class BoardCommentsDAO {
 		
 		getConnection();
 		
-		String sql = "SELECT BoardComments.BoardCommentsID, UsersStatus.UserID, BoardComments.Content, BoardComments.CreatedAt "
+		String sql = "SELECT UsersStatus.UserID, BoardComments.Content, BoardComments.BoardCommentsID, BoardComments.CreatedAt "
 				+ "FROM BoardComments Join UsersStatus on BoardComments.UsersStatusID = UsersStatus.UsersStatusID "
 				+ "Where BoardComments.BoardPostsID = ?";
         
@@ -90,8 +90,7 @@ public class BoardCommentsDAO {
                 System.out.println("[댓글]\n"
                 				+ "아이디 : " + resultSet.getString("UserID") + "\t작성일 : " 
                 				+ simpleDateFormat.format(resultSet.getTimestamp("CreatedAt")) + "\n" 
-                				+ resultSet.getInt("BoardCommentsID") + ". 내용: " 
-                				+ resultSet.getString("Content"));
+                				+ resultSet.getInt("BoardCommentsID") + ". " + resultSet.getString("Content"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -104,5 +103,62 @@ public class BoardCommentsDAO {
                 e.printStackTrace();
             }
         }
+	}
+
+	public int commentsUpdate(BoardCommentsDTO boardCommentsDTO) {
+		int result = 0;
+		
+		getConnection();
+		
+		String sql = "Update BoardComments set Content = ? Where BoardCommentsID = ?";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			
+			pstmt.setString(1, boardCommentsDTO.getContent());
+			pstmt.setInt(2, boardCommentsDTO.getBoardCommentsID());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+		return result;
+	}
+
+	public int commentsDelete(BoardCommentsDTO boardCommentsDTO) {
+		int result = 0;
+		
+		getConnection();
+		
+		String sql = "Delete From BoardComments Where BoardCommentsID = ?";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			
+			pstmt.setInt(1, boardCommentsDTO.getBoardCommentsID());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+		return result;
 	}
 }
