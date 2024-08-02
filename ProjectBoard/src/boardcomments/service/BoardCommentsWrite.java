@@ -30,15 +30,22 @@ public class BoardCommentsWrite implements Board {
         
         int loggedInUserID = usersStatusDAO.getLoggedInUser().getUsersStatusID();
         
-		System.out.print("댓글 입력 : ");
+        BoardCommentsDAO boardCommentsDAO = BoardCommentsDAO.getInstance();
+        boardCommentsDAO.printCommentsOnBoardPosts(boardPostsID);
+        
+		System.out.print("댓글 입력 (종료는 exit) : ");
 		content = scanner.nextLine();
-				
+		
+		if(content.equals("exit")) {
+			System.out.println("댓글 작성이 종료됩니다.");
+			return;
+		}
+		
 		BoardCommentsDTO boardCommentsDTO = new BoardCommentsDTO();
 		boardCommentsDTO.setBoardPostsID(boardPostsID);
 		boardCommentsDTO.setUsersStatusID(loggedInUserID);
 		boardCommentsDTO.setContent(content);
 		
-		BoardCommentsDAO boardCommentsDAO = BoardCommentsDAO.getInstance();
 		int result = boardCommentsDAO.addComments(boardCommentsDTO);
 		
 		System.out.println();

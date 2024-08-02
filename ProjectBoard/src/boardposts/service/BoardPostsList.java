@@ -24,6 +24,7 @@ public class BoardPostsList implements Board {
 		boardPostsID = scanner.nextInt();
 		
 		System.out.println();
+		System.out.println("[게시글]");
 		boardPostsDAO.boardPostsPrintContent(boardPostsID);
 		System.out.println();
 		
