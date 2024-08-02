@@ -20,6 +20,8 @@ public class UsersStatusDAO {
 	private PreparedStatement pstmt;	//인터페이스
 	private ResultSet resultSet;	//인터페이스
 	
+	private UsersStatusDTO loggedInUser; // 로그인된 사용자 정보 유지
+	
 	public UsersStatusDAO() {
 		try {
 			Class.forName(driver);
@@ -34,9 +36,7 @@ public class UsersStatusDAO {
 	
 	public void getConnection() {
 		try {
-			connection = DriverManager.getConnection(url, username, password);
-			System.out.println("connection");
-			
+			connection = DriverManager.getConnection(url, username, password);			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 
@@ -89,7 +89,7 @@ public class UsersStatusDAO {
 			e.printStackTrace();
 		} finally {
 				try {
-					if(resultSet != null)
+					if(resultSet != null) resultSet.close();
 					if(pstmt != null) pstmt.close();
 					if(connection != null) connection.close();
 				} catch (SQLException e) {
@@ -104,7 +104,7 @@ public class UsersStatusDAO {
 		
 		getConnection();
 		
-		String sql1 = "Select Username from UsersStatus Where UserID = ? and Password = ?";
+		String sql1 = "Select Username, UsersStatusID from UsersStatus Where UserID = ? and Password = ?";
 		String sql2 = "Update UsersStatus set IsOnline = 1 where UserID = ?";
 		try {
 			pstmt = connection.prepareStatement(sql1);
@@ -116,6 +116,11 @@ public class UsersStatusDAO {
             if(resultSet.next()) {	
             	username = resultSet.getString("Username");
             	
+            	loggedInUser = new UsersStatusDTO();
+                loggedInUser.setUsersStatusID(resultSet.getInt("UsersStatusID"));
+                loggedInUser.setUserID(userID);
+                loggedInUser.setUsername(username);
+            	
             	pstmt = connection.prepareStatement(sql2);
     			pstmt.setString(1, userID);
     			pstmt.executeUpdate();
@@ -125,7 +130,7 @@ public class UsersStatusDAO {
 			e.printStackTrace();
 		} finally {
 				try {
-					if(resultSet != null)
+					if(resultSet != null) resultSet.close();
 					if(pstmt != null) pstmt.close();
 					if(connection != null) connection.close();
 				} catch (SQLException e) {
@@ -133,5 +138,39 @@ public class UsersStatusDAO {
 				}
 		}
 		return username;
+	}
+	
+	public UsersStatusDTO getLoggedInUser() {
+        return loggedInUser;
+    }
+	
+	public void setloggedInUser(UsersStatusDTO user) {
+		this.loggedInUser = user;
+	}
+
+	public int usersStatusLogOut(int usersStatusID) {
+		int result = 0;
+		
+		getConnection();
+		
+		String sql = "Update UsersStatus set IsOnline = 0 where UsersStatusID = ?";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setInt(1, usersStatusID);
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(resultSet != null) resultSet.close();
+				if(pstmt != null) pstmt.close();
+				if(connection != null) connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 }

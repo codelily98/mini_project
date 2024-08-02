@@ -21,8 +21,10 @@ public class UsersStatusLogin implements Board {
 
         if (username == null) {
         	System.out.println("로그인 실패. 아이디 또는 비밀번호를 확인하세요.");
+        	System.out.println();
         } else {
         	System.out.println("로그인 성공! " + username + "님 환영합니다.");
+        	System.out.println();
         }
     }
 }

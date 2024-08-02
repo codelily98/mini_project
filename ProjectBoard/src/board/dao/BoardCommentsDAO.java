@@ -5,6 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+
+import board.bean.BoardCommentsDTO;
 
 public class BoardCommentsDAO {
 	private String driver = "oracle.jdbc.driver.OracleDriver";
@@ -21,10 +24,9 @@ public class BoardCommentsDAO {
 	public BoardCommentsDAO() {
 		try {
 			Class.forName(driver);
-			System.out.println("driver loading");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}	// 예외처리
+		}
 	}
 	
 	public static BoardCommentsDAO getInstance() {
@@ -33,11 +35,74 @@ public class BoardCommentsDAO {
 	
 	public void getConnection() {
 		try {
-			connection = DriverManager.getConnection(url, username, password);
-			System.out.println("connection");
-			
+			connection = DriverManager.getConnection(url, username, password);			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 
+	}
+	
+	public int addComments(BoardCommentsDTO boardCommentsDTO) {
+		int result = 0;
+		
+		String sql = "INSERT INTO BoardComments (BoardCommentsID, BoardPostsID, UsersStatusID, Content) VALUES (BoardComments_seq.NEXTVAL, ?, ?, ?)";
+		
+		try {
+			getConnection();
+			pstmt = connection.prepareStatement(sql);
+			
+			pstmt.setInt(1, boardCommentsDTO.getBoardPostsID());
+			pstmt.setInt(2, boardCommentsDTO.getUsersStatusID());
+			pstmt.setString(3, boardCommentsDTO.getContent());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(connection != null) connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	public void printCommentsOnBoardPosts(int boardPostsID) {
+		
+		SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+		
+		getConnection();
+		
+		String sql = "SELECT BoardComments.BoardCommentsID, UsersStatus.UserID, BoardComments.Content, BoardComments.CreatedAt "
+				+ "FROM BoardComments Join UsersStatus on BoardComments.UsersStatusID = UsersStatus.UsersStatusID "
+				+ "Where BoardComments.BoardPostsID = ?";
+        
+        try {
+            pstmt = connection.prepareStatement(sql);
+            
+            pstmt.setInt(1, boardPostsID);
+            
+            resultSet = pstmt.executeQuery();
+            
+            while (resultSet.next()) {                
+                System.out.println("[댓글]\n"
+                				+ "아이디 : " + resultSet.getString("UserID") + "\t작성일 : " 
+                				+ simpleDateFormat.format(resultSet.getTimestamp("CreatedAt")) + "\n" 
+                				+ resultSet.getInt("BoardCommentsID") + ". 내용: " 
+                				+ resultSet.getString("Content"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 }

@@ -14,6 +14,7 @@ public class UsersStatusService implements Board {
         Board board = null;
         
         while (true) {
+        	System.out.println("       [회원정보]");
             System.out.println("**********관리**********");
             System.out.println("        1.회원정보 수정");
             System.out.println("        2.회원정보 삭제");

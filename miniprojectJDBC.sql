@@ -62,4 +62,7 @@ drop table BoardComments CASCADE CONSTRAINTS purge;
 DROP SEQUENCE UsersStatus_seq;
 DROP SEQUENCE BoardPosts_seq;
 DROP SEQUENCE BoardComments_seq;
+
+delete from UsersStatus where userid = '1234';
 ------------------------------------------------------------------
+SELECT BoardPostsID FROM BoardPosts WHERE BoardPostsID = 1

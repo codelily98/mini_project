@@ -53,4 +53,12 @@ select * from UsersStatus;
 select * from BoardPosts;
 select * from BoardComments;
 
+drop table UsersStatus  CASCADE CONSTRAINTS PURGE;
+drop table BoardPosts CASCADE CONSTRAINTS PURGE;
+drop table BoardComments CASCADE CONSTRAINTS purge;
+
+DROP SEQUENCE UsersStatus_seq;
+DROP SEQUENCE BoardPosts_seq;
+DROP SEQUENCE BoardComments_seq;
+
 commit;
