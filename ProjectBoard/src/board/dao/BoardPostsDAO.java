@@ -94,6 +94,7 @@ public class BoardPostsDAO {
 				if(connection != null) connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
+				System.out.println("게시글 출력에 실패했습니다.");
 			}
 		}
 	}
@@ -126,6 +127,103 @@ public class BoardPostsDAO {
 				if(connection != null) connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
+				System.out.println("게시글 내용 출력에 실패했습니다.");
+			}
+		}		
+	}
+	
+	public int boardPostsUpdate(BoardPostsDTO boardPostsDTO) {
+        int su = 0;
+		
+		getConnection();
+		
+		String sql = "UPDATE BoardPosts SET title = ?, content = ?, UpdatedAt = CURRENT_TIMESTAMP WHERE BoardPostsID = ?";
+        
+        try {
+        	pstmt = connection.prepareStatement(sql);
+        	
+        	pstmt.setString(1, boardPostsDTO.getTitle());
+        	pstmt.setString(2, boardPostsDTO.getContent());   
+            pstmt.setInt(3, boardPostsDTO.getBoardPostsID());
+
+            su = pstmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(connection != null) connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("게시글 수정에 실패했습니다.");
+			}
+		}
+        return su;
+    }
+	
+	public int boardPostsDelete(int num) {
+		
+		int cnt = 0;
+		
+		String sql = "DELETE FROM BoardPosts WHERE BoardPostsID = ?";
+		
+		getConnection();
+		
+		try {      
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, num);
+            
+            cnt = pstmt.executeUpdate();
+            
+            if (cnt > 0) {
+                System.out.println("삭제 성공");
+            } else {
+                System.out.println("삭제할 글이 없습니다.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(connection != null) connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("게시글 삭제에 실패했습니다.");
+			}
+		}
+        return cnt;
+    }
+	
+	public void boardPostsPrintContentThis(int boardPostsID) {
+		getConnection();	
+		
+		String sql = "select BoardPosts.BoardPostsID, UsersStatus.Username, BoardPosts.Title, "
+				+ "BoardPosts.Content, BoardPosts.CreatedAt, BoardPosts.UpdatedAt from BoardPosts Join UsersStatus "
+				+ "On BoardPosts.UsersStatusID = UsersStatus.UsersStatusID where BoardPosts.BoardPostsID = ?";
+		
+		try {
+			pstmt = connection.prepareStatement(sql);
+			
+			pstmt.setInt(1, boardPostsID);
+
+			resultSet = pstmt.executeQuery();	
+			
+			while(resultSet.next()) {
+				System.out.println("번호 : " + resultSet.getInt("BoardPostsID") + "\t아이디 : " + resultSet.getString("Username")
+				 				+ "\n작성일 : " + resultSet.getTimestamp("CreatedAt") + "\n수정일 : " + resultSet.getTimestamp("UpdatedAt") 
+								+ "\n제목 : " + resultSet.getString("Title") + "\n내용 : " + resultSet.getString("Content"));
+			}			
+		} catch (SQLException e) {
+			e.printStackTrace();	// 에러코드 추적
+		} finally {
+			try {
+				if(resultSet != null) resultSet.close();
+				if(pstmt != null) pstmt.close();
+				if(connection != null) connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("게시글 출력에 실패했습니다.");
 			}
 		}		
 	}

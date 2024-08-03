@@ -25,6 +25,7 @@ public class BoardCommentsWrite implements Board {
 		
         if (usersStatusDAO.getLoggedInUser() == null) {
             System.out.println("로그인이 필요합니다.");
+            System.out.println();
             return;
         }
         
@@ -38,6 +39,7 @@ public class BoardCommentsWrite implements Board {
 		
 		if(content.equals("exit")) {
 			System.out.println("댓글 작성이 종료됩니다.");
+			System.out.println();
 			return;
 		}
 		
@@ -53,11 +55,13 @@ public class BoardCommentsWrite implements Board {
 		if(result > 0) {
 			System.out.println(result + "건의 댓글이 등록되었습니다.");
 			boardCommentsDAO.printCommentsOnBoardPosts(boardPostsID);
+			System.out.println();
 			
 			BoardCommentsSelect boardCommentsSelect = new BoardCommentsSelect(boardPostsID);
 			boardCommentsSelect.execute();
 		} else {
 			System.out.println("댓글 등록에 실패했습니다.");
+			System.out.println();
 		}
 	}
 }

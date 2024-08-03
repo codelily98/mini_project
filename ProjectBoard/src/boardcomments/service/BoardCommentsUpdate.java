@@ -1,5 +1,6 @@
 package boardcomments.service;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import board.bean.BoardCommentsDTO;
@@ -21,28 +22,38 @@ public class BoardCommentsUpdate implements Board {
 		int num;
 		String content;
 		
-		System.out.println();
 		System.out.println("[댓글 수정]");
 		System.out.print("번호 : ");		
-		num = scanner.nextInt();
-		scanner.nextLine();
-		System.out.print("댓글 수정 : ");
-		content = scanner.nextLine();
 		
-		BoardCommentsDAO boardCommentsDAO = BoardCommentsDAO.getInstance();
-		BoardCommentsDTO boardCommentsDTO = new BoardCommentsDTO();
-		
-		boardCommentsDTO.setBoardCommentsID(num);
-		boardCommentsDTO.setContent(content);		
-		
-		int result = boardCommentsDAO.commentsUpdate(boardCommentsDTO);
-		
-		if(result > 0) {
-			System.out.println(result + "건의 댓글 수정이 완료되었습니다.");
+		try {
+			num = scanner.nextInt();
 			
-			boardCommentsDAO.printCommentsOnBoardPosts(boardPostsID);
-		} else {
-			System.out.println("댓글 수정에 실패했습니다.");
-		}
+			scanner.nextLine();
+			System.out.print("댓글 수정 : ");
+			content = scanner.nextLine();
+			
+			BoardCommentsDAO boardCommentsDAO = BoardCommentsDAO.getInstance();
+			BoardCommentsDTO boardCommentsDTO = new BoardCommentsDTO();
+			
+			boardCommentsDTO.setBoardCommentsID(num);
+			boardCommentsDTO.setContent(content);		
+			
+			int result = boardCommentsDAO.commentsUpdate(boardCommentsDTO);
+			
+			if(result > 0) {
+				System.out.println(result + "건의 댓글 수정이 완료되었습니다.");
+				System.out.println();
+				boardCommentsDAO.printCommentsOnBoardPosts(boardPostsID);
+				System.out.println();
+			} else {
+				System.out.println("댓글 수정에 실패했습니다.");
+				System.out.println();
+			}
+			
+		} catch (InputMismatchException e) {
+            System.out.println("숫자만 입력해주세요!");
+            scanner.next();
+            System.out.println();
+        }
 	}
 }

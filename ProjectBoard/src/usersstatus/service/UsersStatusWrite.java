@@ -26,11 +26,12 @@ public class UsersStatusWrite implements Board {
 			
 			if(exist) {
 				System.out.println("사용중인 아이디 입니다");
+				System.out.println();
 			} else {
 				System.out.println("사용가능한 아이디 입니다");
+				System.out.println();
 				break;
 			} 
-			
 		} //while
         
         System.out.print("비밀번호: ");
@@ -46,6 +47,12 @@ public class UsersStatusWrite implements Board {
         
         int su = usersStatusDAO.usersStatusWrite(usersStatusDTO);
         
-        System.out.println(su + "건의 회원가입이 완료되었습니다.");
+        if (su > 0) {
+            System.out.println(su + "건의 회원가입이 완료되었습니다.");
+            System.out.println();
+        } else {
+            System.out.println("회원가입에 실패했습니다.");
+            System.out.println();
+        }
     }
 }

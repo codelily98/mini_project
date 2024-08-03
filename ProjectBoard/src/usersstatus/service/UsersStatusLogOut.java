@@ -11,6 +11,7 @@ public class UsersStatusLogOut implements Board {
 		
 		if(usersStatusDAO.getLoggedInUser() == null) {
 			System.out.println("로그인된 사용자가 없습니다.");
+			System.out.println();
 			return;
 		}
 		
@@ -21,8 +22,10 @@ public class UsersStatusLogOut implements Board {
 		if(result > 0) {
 			System.out.println("로그아웃 되었습니다.");
 			usersStatusDAO.setloggedInUser(null);
+			System.out.println();
 		} else {
 			System.out.println("로그아웃 실패");
+			System.out.println();
 		}
 	}
 

@@ -21,6 +21,7 @@ public class BoardPostsWrite implements Board {
 		
         if (usersStatusDAO.getLoggedInUser() == null) {
             System.out.println("로그인이 필요합니다.");
+            System.out.println();
             return;
         }
 		
@@ -43,8 +44,10 @@ public class BoardPostsWrite implements Board {
 		System.out.println();
 		if(su > 0) {
 			System.out.println("게시글 작성이 완료되었습니다.");
+			System.out.println();
 		} else {
 			System.out.println("게시글 작성에 실패하였습니다.");
+			System.out.println();
 		}
 	}
 }

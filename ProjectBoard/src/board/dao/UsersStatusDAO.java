@@ -44,6 +44,7 @@ public class UsersStatusDAO {
 	
 	public int usersStatusWrite(UsersStatusDTO usersStatusDTO) {
 		int su = 0;
+		
 		getConnection();
 		
 		String sql = "insert into UsersStatus (UsersStatusID, UserID, Password, Username) values(UsersStatus_seq.nextval, ?, ?, ?)";
@@ -69,7 +70,7 @@ public class UsersStatusDAO {
 		return su;
 		
 	}
-
+	
 	public boolean isExistId(String userID) {
 		boolean exist = false;
 		
@@ -98,6 +99,35 @@ public class UsersStatusDAO {
 		}
 		return exist;
 	}
+	
+	public boolean isExistPwd(String password) {
+        //비밀번호 확인 메서드
+        boolean exist = false;
+        //불린형 변수설정. default값은 false 설정.
+        getConnection();
+        String sql = "select * from UsersStatus where Password = ?";
+
+        try {
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, password);
+            resultSet = pstmt.executeQuery();
+
+            if (resultSet.next()) {
+                exist = true; //
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null)
+                    if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return exist;
+    }
 
 	public String usersStatusLogin(String userID, String password) {
 		String username = null;
@@ -172,5 +202,89 @@ public class UsersStatusDAO {
 			}
 		}
 		return result;
+	}
+	
+	public int usersStatusDelete(String userID) {
+		
+		int result = 0;
+		
+		getConnection();    
+        
+        String sql = "delete from UsersStatus where UserID =?";
+        try {
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, userID);
+            
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+	public int update(UsersStatusDTO usersStatusDTO) {
+		int su = 0;
+        getConnection();
+        String sql = "Update UsersStatus set Password =?, Username =? where UserID =?";
+
+        try {
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, usersStatusDTO.getPassword());
+            pstmt.setString(2, usersStatusDTO.getUsername());
+            pstmt.setString(3, usersStatusDTO.getUserID());
+            
+            su = pstmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("회원정보 수정에 실패했습니다.");
+            }
+        }
+        return su;
+	}
+	
+	public UsersStatusDTO getMember(String userID) {
+		UsersStatusDTO usersStatusDTO = null; //객체 선언과 초기화
+        getConnection();
+
+        String sql = "select * from UsersStatus where UserID =?";
+        //UsersStatus테이블에서 주어진 UserID와 일치하는 행을 선택.
+        try {
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, userID); //첫번째 파라미터(?)에 UserID값을 설정
+            resultSet = pstmt.executeQuery();
+
+            if (resultSet.next()) {
+                usersStatusDTO = new UsersStatusDTO();
+                usersStatusDTO.setPassword(resultSet.getString("Password"));
+                usersStatusDTO.setUsername(resultSet.getString("Username"));
+                usersStatusDTO.setUserID(resultSet.getString("UserID"));
+                //입력한 Paaword와 Username를 받아와서 새로운 DTO객체에 저장.
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return usersStatusDTO;
 	}
 }
