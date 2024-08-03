@@ -16,8 +16,8 @@ CREATE TABLE BoardPosts (
     Content CLOB NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UpdatedAt TIMESTAMP,
-    CONSTRAINT fk_user FOREIGN KEY (UsersStatusID) REFERENCES UsersStatus(UsersStatusID) -- 외래 키 제약 조건
-);
+    CONSTRAINT fk_user FOREIGN KEY (UsersStatusID) REFERENCES UsersStatus(UsersStatusID) ON DELETE CASCADE -- 외래 키 제약 조건
+); --On Delete Cascade 참조(외례키) 사용 시 정보 삭제를 하기 위해서 사용해야 되는 문구
 
 -- 댓글 테이블
 CREATE TABLE BoardComments (
@@ -26,8 +26,8 @@ CREATE TABLE BoardComments (
     UsersStatusID NUMBER,                         -- UserID를 NUMBER로 수정
     Content CLOB NOT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_Posts FOREIGN KEY (BoardPostsID) REFERENCES BoardPosts(BoardPostsID), -- 외래 키 제약 조건
-    CONSTRAINT fk_Users FOREIGN KEY (UsersStatusID) REFERENCES UsersStatus(UsersStatusID)   -- 외래 키 제약 조건
+    CONSTRAINT fk_Posts FOREIGN KEY (BoardPostsID) REFERENCES BoardPosts(BoardPostsID) ON DELETE CASCADE, -- 외래 키 제약 조건
+    CONSTRAINT fk_Users FOREIGN KEY (UsersStatusID) REFERENCES UsersStatus(UsersStatusID) ON DELETE CASCADE  -- 외래 키 제약 조건
 );
 
 CREATE SEQUENCE UsersStatus_seq
@@ -47,18 +47,3 @@ START WITH 1
 INCREMENT BY 1
 NOCACHE
 NOCYCLE;
-
----------------------------------------------------------
-select * from UsersStatus;
-select * from BoardPosts;
-select * from BoardComments;
-
-drop table UsersStatus  CASCADE CONSTRAINTS PURGE;
-drop table BoardPosts CASCADE CONSTRAINTS PURGE;
-drop table BoardComments CASCADE CONSTRAINTS purge;
-
-DROP SEQUENCE UsersStatus_seq;
-DROP SEQUENCE BoardPosts_seq;
-DROP SEQUENCE BoardComments_seq;
-
-commit;
