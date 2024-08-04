@@ -25,6 +25,7 @@ public class UsersStatusDelete implements Board {
 				System.out.println();
 				return;
 			}
+			
 			int su = usersStatusDAO.usersStatusDelete(userID);
 			System.out.println(su+"개의 행이 삭제되었습니다.");
 			System.out.println();

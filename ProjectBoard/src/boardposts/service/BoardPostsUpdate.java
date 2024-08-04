@@ -59,6 +59,10 @@ public class BoardPostsUpdate implements Board {
                 System.out.println("[게시글]");
                 boardPostsDAO.boardPostsPrintContentThis(num);            
                 System.out.println();
+            } else {
+            	System.out.println("해당 번호의 게시글이 없습니다.");
+            	System.out.println();
+            	return;
             }
             
         } catch (InputMismatchException e) {

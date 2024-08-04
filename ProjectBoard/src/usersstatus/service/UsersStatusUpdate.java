@@ -22,8 +22,8 @@ public class UsersStatusUpdate implements Board {
 			boolean existId = usersStatusDAO.isExistId(UserID);
 			boolean existPwd = usersStatusDAO.isExistPwd(Password);
 			
-			if(!(existId&& existPwd)){
-				System.out.println("아이디가 비밀번호가 맞지 않습니다.");
+			if(!(existId&& existPwd)) {
+				System.out.println("아이디나 비밀번호가 맞지 않습니다.");
 				return;
 			} else {
 				System.out.print("수정할 비밀번호 입력 : ");
