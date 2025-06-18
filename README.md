@@ -27,6 +27,7 @@
 
 ## 프로젝트 구조
 
+\`\`\`
 src
 │
 ├── board
@@ -70,6 +71,7 @@ src
 │           ├── UsersStatusService.java
 │           ├── UsersStatusUpdate.java
 │           └── UsersStatusWrite.java
+\`\`\`
 
 ## 역할 (BE/FE)
 
